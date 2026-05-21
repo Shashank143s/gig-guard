@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&family=Chivo:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F4F4F0;
+    color: #111111;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+html.dark body {
+    background-color: #0E0E10;
+    color: #F4F4F0;
+}
+
+code {
+    font-family: 'Chivo', source-code-pro, Menlo, monospace;
+}
+
+@layer base {
+    :root {
+        --background: 60 8% 95%;
+        --foreground: 0 0% 7%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 7%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 7%;
+        --primary: 0 0% 7%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 60 8% 92%;
+        --secondary-foreground: 0 0% 9%;
+        --muted: 60 8% 92%;
+        --muted-foreground: 0 0% 30%;
+        --accent: 60 8% 92%;
+        --accent-foreground: 0 0% 9%;
+        --destructive: 6 100% 61%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 0%;
+        --input: 0 0% 0%;
+        --ring: 0 0% 0%;
+        --radius: 0.75rem;
+    }
+    .dark {
+        --background: 240 6% 6%;
+        --foreground: 60 8% 95%;
+        --card: 240 5% 11%;
+        --card-foreground: 60 8% 95%;
+        --popover: 240 5% 11%;
+        --popover-foreground: 60 8% 95%;
+        --primary: 60 8% 95%;
+        --primary-foreground: 240 6% 6%;
+        --secondary: 240 5% 15%;
+        --secondary-foreground: 60 8% 95%;
+        --muted: 240 5% 15%;
+        --muted-foreground: 0 0% 65%;
+        --accent: 240 5% 15%;
+        --accent-foreground: 60 8% 95%;
+        --destructive: 6 100% 61%;
+        --destructive-foreground: 60 8% 95%;
+        --border: 0 0% 100%;
+        --input: 0 0% 100%;
+        --ring: 0 0% 100%;
+    }
+}
+
+@layer base {
+    * { @apply border-border; }
+    body { @apply bg-background text-foreground; }
+    h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
+}
+
+@layer components {
+    .nb-card {
+        @apply bg-white border-4 border-black rounded-xl;
+        box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.25s ease, color 0.25s ease;
+    }
+    .nb-card-hover:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+    }
+    .nb-card-sm {
+        @apply bg-white border-4 border-black rounded-lg;
+        box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+        transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .nb-btn {
+        @apply border-4 border-black rounded-xl font-black uppercase tracking-wider;
+        box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+    }
+    .nb-btn:hover { filter: brightness(1.05); }
+    .nb-btn:active {
+        transform: translate(6px, 6px);
+        box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+    }
+    .nb-input {
+        @apply bg-white border-4 border-black rounded-lg font-bold;
+        box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.25s ease, color 0.25s ease;
+    }
+    .nb-input:focus {
+        outline: none;
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+    }
+    .num {
+        font-family: 'Chivo', sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+    }
+    .display-font { font-family: 'Outfit', sans-serif; }
+}
+
+/* Dark-mode overrides for neo-brutalist surfaces */
+html.dark .nb-card,
+html.dark .nb-card-sm {
+    background-color: #1c1c1e;
+    color: #F4F4F0;
+    border-color: #FFFFFF;
+    box-shadow: 6px 6px 0px 0px rgba(255,255,255,1);
+}
+html.dark .nb-card-sm {
+    box-shadow: 4px 4px 0px 0px rgba(255,255,255,1);
+}
+html.dark .nb-card-hover:hover {
+    box-shadow: 8px 8px 0px 0px rgba(255,255,255,1);
+}
+html.dark .nb-btn {
+    border-color: #FFFFFF;
+    box-shadow: 6px 6px 0px 0px rgba(255,255,255,1);
+}
+html.dark .nb-btn:active {
+    box-shadow: 0px 0px 0px 0px rgba(255,255,255,1);
+}
+html.dark .nb-input {
+    background-color: #1c1c1e;
+    color: #F4F4F0;
+    border-color: #FFFFFF;
+    box-shadow: 4px 4px 0px 0px rgba(255,255,255,1);
+}
+html.dark .nb-input:focus {
+    box-shadow: 2px 2px 0px 0px rgba(255,255,255,1);
+}
+html.dark .nb-input::placeholder { color: #888; }
+/* Keep colored accent surfaces vivid in dark mode (DoorDash red, Uber green, pastels) */
+html.dark .nb-card[style*="background"],
+html.dark .nb-card-sm[style*="background"],
+html.dark .nb-btn[style*="background"] {
+    color: inherit;
+}
+
+[data-debug-wrapper="true"] { display: contents !important; }
+
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop-in {
+    0% { opacity: 0; transform: scale(0.92); }
+    60% { transform: scale(1.02); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse-tag {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+}
+.anim-slide-up { animation: slide-up 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+.anim-pop { animation: pop-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+.anim-pulse-tag { animation: pulse-tag 3s ease-in-out infinite; }
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+
+.bg-grid {
+    background-image:
+        linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+html.dark .bg-grid {
+    background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+}
+
+.bg-dots {
+    background-image: radial-gradient(rgba(0,0,0,0.12) 1.2px, transparent 1.2px);
+    background-size: 18px 18px;
+}
+html.dark .bg-dots {
+    background-image: radial-gradient(rgba(255,255,255,0.08) 1.2px, transparent 1.2px);
+}
