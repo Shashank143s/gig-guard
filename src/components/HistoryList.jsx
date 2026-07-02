@@ -72,6 +72,11 @@ export default function HistoryList({ history, onClear, onRemove, onLoad }) {
                         Mileage {Number(h.mileageKm).toFixed(1)} km → {fmt(h.mileageAdjustment)}
                       </div>
                     )}
+                    {Number(h.tips) > 0 && (
+                      <div className="text-xs font-bold opacity-70 truncate">
+                        Tips {h.includeTips ? "included" : "excluded"}: {fmt(h.tips)}
+                      </div>
+                    )}
                     <div className="text-[10px] opacity-60">
                       {new Date(h.savedAt).toLocaleString("en-CA", {
                         month: "short",

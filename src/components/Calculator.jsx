@@ -7,6 +7,7 @@ import {
   DollarSign,
   Clock4,
   Route,
+  Banknote,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PROVINCES, calculateAdjustment, toDecimalHours, fromDecimalHours } from "../lib/wages";
@@ -41,6 +42,8 @@ export default function Calculator({ appId, onBack }) {
     normalizeProvinceCode(readPrefs().provinceCode)
   );
   const [mileageKm, setMileageKm] = useState(() => readPrefs().mileageKm ?? "");
+  const [tips, setTips] = useState(() => readPrefs().tips ?? "");
+  const [includeTips, setIncludeTips] = useState(() => readPrefs().includeTips ?? false);
   const [history, setHistory] = useState(readHistory);
 
   const activeHours = useMemo(
@@ -51,9 +54,9 @@ export default function Calculator({ appId, onBack }) {
   useEffect(() => {
     localStorage.setItem(
       PREFS_KEY,
-      JSON.stringify({ basePay, activeHours, provinceCode, mileageKm })
+      JSON.stringify({ basePay, activeHours, provinceCode, mileageKm, tips, includeTips })
     );
-  }, [basePay, activeHours, provinceCode, mileageKm]);
+  }, [basePay, activeHours, provinceCode, mileageKm, tips, includeTips]);
 
   const hasInput =
     Number(basePay) >= 0 &&
@@ -63,10 +66,17 @@ export default function Calculator({ appId, onBack }) {
 
   const result = useMemo(() => {
     if (!hasInput) return null;
-    return calculateAdjustment({ basePay, activeHours, provinceCode, mileageKm });
-  }, [basePay, activeHours, provinceCode, mileageKm, hasInput]);
+    return calculateAdjustment({
+      basePay,
+      activeHours,
+      provinceCode,
+      mileageKm,
+      tips,
+      includeTips,
+    });
+  }, [basePay, activeHours, provinceCode, mileageKm, tips, includeTips, hasInput]);
 
-  const inputs = { basePay, activeHours, provinceCode, mileageKm };
+  const inputs = { basePay, activeHours, provinceCode, mileageKm, tips, includeTips };
 
   const saveResult = () => {
     if (!result) {
@@ -104,6 +114,8 @@ export default function Calculator({ appId, onBack }) {
     setMinutesPart(String(hm.m));
     setProvinceCode(normalizeProvinceCode(h.province?.code));
     setMileageKm(h.province?.code === "BC" ? String(h.mileageKm ?? "") : "");
+    setTips(String(h.tips ?? ""));
+    setIncludeTips(Boolean(h.includeTips));
     toast(`Loaded ${APP_CONFIG[h.appId].name} entry.`);
   };
 
@@ -170,6 +182,23 @@ export default function Calculator({ appId, onBack }) {
                 </Field>
 
                 <Field
+                  label="Tips (CAD)"
+                  icon={<Banknote className="w-4 h-4" strokeWidth={3} />}
+                >
+                  <input
+                    data-testid="tips-input"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    inputMode="decimal"
+                    value={tips}
+                    onChange={(e) => setTips(e.target.value)}
+                    placeholder="e.g. 22.00"
+                    className="nb-input w-full px-4 py-3 text-lg"
+                  />
+                </Field>
+
+                <Field
                   label="Active Time (hh : mm)"
                   icon={<Clock4 className="w-4 h-4" strokeWidth={3} />}
                 >
@@ -212,6 +241,35 @@ export default function Calculator({ appId, onBack }) {
                     </div>
                   )}
                 </Field>
+              </div>
+
+              <div className="mt-4">
+                <div className="flex items-center justify-between gap-4 nb-card-sm p-4">
+                  <div>
+                    <div className="text-[10px] font-black uppercase tracking-widest">
+                      Include tips
+                    </div>
+                    <div className="text-xs font-bold opacity-75 mt-1">
+                      Count tips in your calculation, projections, and goal tracker.
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={includeTips}
+                    data-testid="include-tips-toggle"
+                    onClick={() => setIncludeTips((v) => !v)}
+                    className={`nb-card relative inline-flex h-8 w-14 items-center rounded-full border-4 border-black transition-colors ${
+                      includeTips ? "bg-[#00CC99]" : "bg-white dark:bg-[#1c1c1e]"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 rounded-full bg-black dark:bg-white transition-transform ${
+                        includeTips ? "translate-x-3.5" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
               </div>
 
               <div className="mt-4">
@@ -278,6 +336,8 @@ export default function Calculator({ appId, onBack }) {
                     setHoursPart("");
                     setMinutesPart("");
                     setMileageKm("");
+                    setTips("");
+                    setIncludeTips(false);
                     toast("Inputs reset.");
                   }}
                   data-testid="reset-inputs-btn"
@@ -303,6 +363,8 @@ export default function Calculator({ appId, onBack }) {
               activeHours={activeHours}
               provinceCode={provinceCode}
               mileageKm={mileageKm}
+              tips={tips}
+              includeTips={includeTips}
               accent={cfg.accent}
             />
 

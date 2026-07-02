@@ -16,6 +16,9 @@ export default function PayResults({ result, accent }) {
     mileageAdjustment,
     mileageKm,
     mileageRate,
+    tips,
+    tipsAdjustment,
+    includeTips,
     total,
     effectiveRate,
     baseRate,
@@ -26,6 +29,12 @@ export default function PayResults({ result, accent }) {
   } = result;
 
   const showMileage = province.code === "BC";
+  const showTips = Number(tips) > 0;
+  const gridCols = showMileage && showTips
+    ? "md:grid-cols-6"
+    : showMileage || showTips
+      ? "md:grid-cols-5"
+      : "md:grid-cols-4";
   const hasAnyAdjustment = adjustment > 0;
   const heroLabel = wageAdjustment > 0 && mileageAdjustment > 0
     ? "Pay adjustment + mileage owed"
@@ -79,10 +88,23 @@ export default function PayResults({ result, accent }) {
             <span className="num">{fmt(mileageRate)}</span>/km.
           </div>
         )}
+        {showTips && (
+          <div className="mt-2 text-sm font-bold">
+            {includeTips ? (
+              <>
+                Includes <span className="num">{fmt(tipsAdjustment)}</span> in tips.
+              </>
+            ) : (
+              <>
+                Tips entered: <span className="num">{fmt(tips)}</span> (excluded from calculations).
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Breakdown grid — 2 cols on mobile, 4 on md+ to prevent overflow */}
-      <div className={`grid grid-cols-2 ${showMileage ? "md:grid-cols-5" : "md:grid-cols-4"} gap-3`}>
+      <div className={`grid grid-cols-2 ${gridCols} gap-3`}>
         <StatTile label="Base Pay" value={fmt(basePay)} testid="stat-base-pay" />
         <StatTile
           label="Floor"
@@ -96,6 +118,14 @@ export default function PayResults({ result, accent }) {
             value={fmt(mileageAdjustment)}
             testid="stat-mileage"
             highlight="#D4C4FB"
+          />
+        )}
+        {showTips && (
+          <StatTile
+            label="Tips"
+            value={includeTips ? fmt(tipsAdjustment) : fmt(0)}
+            testid="stat-tips"
+            highlight="#FFF3B0"
           />
         )}
         <StatTile

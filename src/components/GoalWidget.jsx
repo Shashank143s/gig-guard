@@ -11,7 +11,16 @@ const fmt = (n) =>
 
 const STORAGE = "gigguard.goal.v1";
 
-export default function GoalWidget({ appId, basePay, activeHours, provinceCode, mileageKm, accent }) {
+export default function GoalWidget({
+  appId,
+  basePay,
+  activeHours,
+  provinceCode,
+  mileageKm,
+  tips,
+  includeTips,
+  accent,
+}) {
   const [goal, setGoal] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE);
@@ -47,7 +56,14 @@ export default function GoalWidget({ appId, basePay, activeHours, provinceCode, 
   let minPerHour = 0;
 
   if (hasInputs) {
-    const r = calculateAdjustment({ basePay, activeHours, provinceCode, mileageKm });
+    const r = calculateAdjustment({
+      basePay,
+      activeHours,
+      provinceCode,
+      mileageKm,
+      tips,
+      includeTips,
+    });
     current = r.total;
     baseRate = r.baseRate;
     minPerHour = r.floorWage;
@@ -133,24 +149,24 @@ export default function GoalWidget({ appId, basePay, activeHours, provinceCode, 
             ) : (
               <>
                 <div className="nb-card-sm p-3 bg-[#FFF3B0]" data-testid="goal-hours-needed">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-black">
+                  <div className="text-[10px] font-black uppercase tracking-widest">
                     Hours to go
                   </div>
-                  <div className="num text-2xl leading-none mt-1 text-black">
+                  <div className="num text-2xl leading-none mt-1">
                     {wh}h {String(wm).padStart(2, "0")}m
                   </div>
-                  <div className="text-[10px] font-bold mt-1 text-black/70">
+                  <div className="text-[10px] font-bold mt-1">
                     at {fmt(Math.max(baseRate, minPerHour))}/hr effective
                   </div>
                 </div>
                 <div className="nb-card-sm p-3 bg-[#D4C4FB]">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-black">
+                  <div className="text-[10px] font-black uppercase tracking-widest">
                     Still owed
                   </div>
-                  <div className="num text-2xl leading-none mt-1 text-black">
+                  <div className="num text-2xl leading-none mt-1">
                     {fmt(g - current)}
                   </div>
-                  <div className="text-[10px] font-bold mt-1 text-black/70 flex items-center gap-1">
+                  <div className="text-[10px] font-bold mt-1 flex items-center gap-1">
                     <Flame className="w-3 h-3" strokeWidth={3} />
                     keep going
                   </div>

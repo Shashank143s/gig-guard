@@ -108,7 +108,21 @@ export default function EarningsProjection({ inputs, accent }) {
               , plus <span className="num">{fmt(mileageBonus)}</span> in mileage
               reimbursement
             </>
-          ) : null}.
+          ) : null}
+          {Number(inputs.tips) > 0 ? (
+            baseline.includeTips ? (
+              <>
+                , and includes <span className="num">{fmt(inputs.tips)}</span> in tips
+              </>
+            ) : (
+              <>
+                . Tips of <span className="num">{fmt(inputs.tips)}</span> are entered
+                but excluded from this projection
+              </>
+            )
+          ) : (
+            "."
+          )}
         </p>
       </div>
 

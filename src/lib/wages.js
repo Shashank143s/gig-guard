@@ -16,21 +16,31 @@ export const getFloorWage = (province) =>
     ? province.gigWage
     : province.minWage;
   
-  /**
+/**
  * Calculate guaranteed minimum earnings and any pay adjustment.
  * adjustment = wage top-up + BC mileage reimbursement
+ * total = base pay + adjustment + optional tips
  */
-export function calculateAdjustment({ basePay, activeHours, provinceCode, mileageKm = 0 }) {
+export function calculateAdjustment({
+  basePay,
+  activeHours,
+  provinceCode,
+  mileageKm = 0,
+  tips = 0,
+  includeTips = false,
+}) {
   const province = getProvince(provinceCode);
   const floorWage = getFloorWage(province);
   const bp = Number(basePay) || 0;
   const hrs = Number(activeHours) || 0;
   const km = Math.max(0, Number(mileageKm) || 0);
+  const tipValue = Math.max(0, Number(tips) || 0);
   const guaranteed = +(floorWage * hrs).toFixed(2);
   const wageAdjustment = +Math.max(0, guaranteed - bp).toFixed(2);
   const mileageAdjustment = province.code === "BC" ? +(km * BC_MILEAGE_RATE).toFixed(2) : 0;
+  const tipsAdjustment = includeTips ? +tipValue.toFixed(2) : 0;
   const adjustment = +(wageAdjustment + mileageAdjustment).toFixed(2);
-  const total = +(bp + adjustment).toFixed(2);
+  const total = +(bp + adjustment + tipsAdjustment).toFixed(2);
   const baseRate = hrs > 0 ? +(bp / hrs).toFixed(2) : 0;
   const effectiveRate = hrs > 0 ? +(total / hrs).toFixed(2) : 0;
   return {
@@ -42,8 +52,11 @@ export function calculateAdjustment({ basePay, activeHours, provinceCode, mileag
     activeHours: +hrs.toFixed(2),
     mileageKm: +km.toFixed(2),
     mileageRate: province.code === "BC" ? BC_MILEAGE_RATE : 0,
+    tips: +tipValue.toFixed(2),
+    includeTips: !!includeTips,
     wageAdjustment,
     mileageAdjustment,
+    tipsAdjustment,
     guaranteed,
     adjustment,
     total,
@@ -57,7 +70,15 @@ export function calculateAdjustment({ basePay, activeHours, provinceCode, mileag
    * Project earnings for extra hours added.
    * User keeps earning at their current per-active-hour base rate.
    */
-export function projectEarnings({ basePay, activeHours, extraHours, provinceCode, mileageKm = 0 }) {
+export function projectEarnings({
+  basePay,
+  activeHours,
+  extraHours,
+  provinceCode,
+  mileageKm = 0,
+  tips = 0,
+  includeTips = false,
+}) {
   const bp = Number(basePay) || 0;
   const hrs = Number(activeHours) || 0;
   const extra = Math.max(0, Number(extraHours) || 0);
@@ -69,6 +90,8 @@ export function projectEarnings({ basePay, activeHours, extraHours, provinceCode
     activeHours: projectedHours,
     provinceCode,
     mileageKm,
+    tips,
+    includeTips,
   });
 }
   
